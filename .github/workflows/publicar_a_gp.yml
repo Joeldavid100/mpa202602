@@ -21,7 +21,7 @@ jobs:
       url: ${{ steps.github-pages.output.url}}
     runs-on: ubuntu-lastest
     steps:
-        - name Clonar el Repositorio
+        - name: Clonar el Repositorio
           uses: actions/checkout@v4
         - name: Instalar Nodejs
           uses: actions/setup-node@v6
