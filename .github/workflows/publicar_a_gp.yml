@@ -3,39 +3,49 @@ name: VITE MPA Publicar Gitgub Pages
 on:
   push:
     branches:
-    - main
+      - main
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 env:
-  DEPLOY_BASE_URL: ${{ vars.DEPLOY_BASE_URL}}
+  DEPLOY_BASE_URL: ${{ vars.DEPLOY_BASE_URL }}
+
 concurrency:
-group: "pages"
-cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
-    enviroment:
+    environment:
       name: github-pages
-      url: ${{ steps.github-pages.output.url}}
-    runs-on: ubuntu-lastest
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-        - name: Clonar el Repositorio
-          uses: actions/checkout@v4
-        - name: Instalar Nodejs
-          uses: actions/setup-node@v6
-          with:
+      - name: Clonar el Repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Nodejs
+        uses: actions/setup-node@v4
+        with:
           node-version: '24'
-        - name: Instalar Dependencias del Proyecto
-          run: npm install
-        - name: Compilar el Proyecto en Dist
-          run: npm run build
-        - name: Configurar Github Pages para Publicar
-          uses: actions/configure-pages@v5
-        - name: Subir los compilados (DIST)
-          uses: actions/upload-pages-artifacts@v4
-          with:
+
+      - name: Instalar Dependencias del Proyecto
+        run: npm install
+
+      - name: Compilar el Proyecto en Dist
+        run: npm run build
+
+      - name: Configurar Github Pages para Publicar
+        uses: actions/configure-pages@v5
+
+      - name: Subir los compilados (DIST)
+        uses: actions/upload-pages-artifact@v3
+        with:
           path: './dist'
-          name: Publicar Artefactos
-          uses: actions/deploy-pages@v4
+
+      - name: Publicar Artefactos
+        id: deployment
+        uses: actions/deploy-pages@v4
